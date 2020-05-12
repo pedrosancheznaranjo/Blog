@@ -1,0 +1,2 @@
+﻿CREATE ASSEMBLY IF NOT EXISTS [PDFExtractor] FROM @_DeployTempDirectory + @"/PDFExtractor/PDFExtractor.dll";
+CREATE ASSEMBLY IF NOT EXISTS [itextsharp] FROM @_DeployTempDirectory + @"/itextsharp/itextsharp.dll";
