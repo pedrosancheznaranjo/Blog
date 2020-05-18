@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>9ab4ee6e-80aa-415f-919c-a9d85a23e357</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.Redis" Version="3.1.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.UI" Version="3.1.0" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="3.1.4" />
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="3.1.4" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="5.4.1" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="5.4.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\AzureRedisCache.CommonServices.Contracts\AzureRedisCache.CommonServices.Contracts.csproj" />
+    <ProjectReference Include="..\AzureRedisCache.Repository.Contracts\AzureRedisCache.Repository.Contracts.csproj" />
+    <ProjectReference Include="..\AzureRedisCache.Repository\AzureRedisCache.Repository.csproj" />
+    <ProjectReference Include="..\IWeatherForecastRepository.CommonServices\AzureRedisCache.CommonServices.csproj" />
+  </ItemGroup>
+
+
+</Project>
