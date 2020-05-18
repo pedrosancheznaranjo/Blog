@@ -1,11 +1,13 @@
 ﻿using AzureRedisCache.CommonServices;
 using AzureRedisCache.CommonServices.Contracts;
+using AzureRedisCache.HealthChecks;
 using AzureRedisCache.Repository;
 using AzureRedisCache.Repository.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.OpenApi.Models;
+using StackExchange.Redis;
 
 namespace AzureRedisCache.API.Extensions
 {
@@ -21,10 +23,9 @@ namespace AzureRedisCache.API.Extensions
         public static IServiceCollection AddCustomHealthChecks(this IServiceCollection services, IConfiguration configuration)
         {
             return services
-                .AddHealthChecksUI()
                 .AddHealthChecks()
                 .AddCheck("self", () => HealthCheckResult.Healthy())
-                .AddRedis(configuration.GetConnectionString("RedisConnectionString"))
+                .AddCheck<RedisHealthCheck>("Redis")
                 .Services;
         }
 

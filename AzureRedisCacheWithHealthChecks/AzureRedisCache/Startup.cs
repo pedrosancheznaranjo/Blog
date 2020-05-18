@@ -1,12 +1,14 @@
 using AzureRedisCache.API.Extensions;
-using HealthChecks.UI.Client;
+using AzureRedisCache.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using System.Linq;
 using System.Text;
 
 namespace AzureRedisCache.API
@@ -52,31 +54,30 @@ namespace AzureRedisCache.API
                 c.RoutePrefix = string.Empty;
             });
 
-            app.UseHealthChecks("/healthz", new HealthCheckOptions
+            app.UseHealthChecks("/health", new HealthCheckOptions
             {
-                Predicate = registration => registration.Name.Equals("self"),
                 ResponseWriter = async (context, report) =>
                 {
-                    context.Response.ContentType = "application/json; charset=utf-8";
-                    var bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(report));
-                    await context.Response.Body.WriteAsync(bytes);
+                    context.Response.ContentType = "application/json";
+
+                    var response = new HealthCheckResponse
+                    {
+                        Status = report.Status.ToString(),
+                        Checks = report.Entries.Select(x => new HealthCheck
+                        {
+                            Component = x.Key,
+                            Status = x.Value.Status.ToString(),
+                            Description = x.Value.Description
+                        }),
+                        Duration = report.TotalDuration
+                    };
+
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
                 }
             });
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHealthChecks("healthz", new HealthCheckOptions()
-                {
-                    Predicate = _ => true,
-                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
-                });
-
-                endpoints.MapHealthChecksUI(setup =>
-                {
-                    setup.UIPath = "/healthchecks-ui"; // this is ui path in your browser
-                    setup.ApiPath = "/health-ui-api"; // the UI ( spa app )  use this path to get information from the store ( this is NOT the healthz path, is internal ui api )
-                });
-
                 endpoints.MapControllers();
             });
         }
